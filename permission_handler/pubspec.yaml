@@ -27,12 +27,12 @@ dependencies:
     git:
       url: 'https://github.com/MilosKarakas/flutter-permission-handler.git'
       path: permission_handler_android
-      ref: '#1108'
+      ref: '#1108-2'
   permission_handler_apple:
     git:
       url: 'https://github.com/MilosKarakas/flutter-permission-handler.git'
       path: permission_handler_apple
-      ref: '#1108'
+      ref: '#1108-2'
   permission_handler_windows:
     git:
       url: 'https://github.com/MilosKarakas/flutter-permission-handler.git'
@@ -42,7 +42,7 @@ dependencies:
     git:
       url: 'https://github.com/MilosKarakas/flutter-permission-handler.git'
       path: permission_handler_platform_interface
-      ref: '#1108'
+      ref: '#1108-2'
 
 dev_dependencies:
   flutter_lints: ^1.0.4

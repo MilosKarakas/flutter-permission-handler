@@ -70,7 +70,7 @@
 
     EKEventStore *eventStore = [[EKEventStore alloc] init];
 
-    if @available(iOS 17.0, *) {
+    if (@available(iOS 17.0, *)) {
         if (entityType == EKEntityTypeEvent) {
             #if PERMISSION_EVENTS
             [eventStore requestFullAccessToEventsWithCompletion:^(BOOL granted, NSError *error) {
@@ -115,7 +115,7 @@
 + (PermissionStatus)permissionStatus:(EKEntityType)entityType {
     EKAuthorizationStatus status = [EKEventStore authorizationStatusForEntityType:entityType];
 
-    if @available(iOS 17.0, *) {
+    if (@available(iOS 17.0, *)) {
         switch (status) {
                 case EKAuthorizationStatusNotDetermined:
                     return PermissionStatusDenied;

@@ -48,6 +48,9 @@ post_install do |installer|
         ## dart: PermissionGroup.calendar
         'PERMISSION_EVENTS=1',
 
+        ## dart: PermissionGroup.calendarAddOnly
+        'PERMISSION_EVENTS_ADD_ONLY=1'
+
         ## dart: PermissionGroup.reminders
         'PERMISSION_REMINDERS=1',
 

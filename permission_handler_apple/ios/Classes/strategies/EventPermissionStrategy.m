@@ -54,6 +54,7 @@
         #else
         completionHandler(PermissionStatusDenied);
         return;
+        #endif
     } else if (permission == PermissionGroupReminders) {
         #if PERMISSION_REMINDERS
         entityType = EKEntityTypeReminder;

@@ -3,6 +3,7 @@ description: Permission plugin for Flutter. This plugin provides the iOS API to 
 repository: https://github.com/baseflow/flutter-permission-handler
 issue_tracker: https://github.com/Baseflow/flutter-permission-handler/issues
 version: 9.1.4
+publish_to: none
 
 environment:
   sdk: ">=2.15.0 <4.0.0"
@@ -18,7 +19,11 @@ flutter:
 dependencies:
   flutter:
     sdk: flutter
-  permission_handler_platform_interface: ^3.11.2
+  permission_handler_platform_interface:
+    git:
+      url: 'https://github.com/MilosKarakas/flutter-permission-handler.git'
+      path: permission_handler_platform_interface
+      ref: '#1108'
 
 dev_dependencies:
   flutter_lints: ^1.0.4

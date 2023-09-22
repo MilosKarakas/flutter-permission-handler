@@ -1,21 +1,3 @@
-## 11.0.0
-
-* **BREAKING CHANGE:** Fixes a bug where the permission status would return 'denied' regardless of whether the status was 'denied' or 'permanently denied'.
-
-## 10.3.6
-
-* Fixes a bug where requesting multiple permissions would crash the app if at least one of the permissions was a [special permission](https://developer.android.com/guide/topics/permissions/overview#special).
-
-## 10.3.5
-
-* Fixes a bug where `Permission.ScheduleExactAlarm` was not opening the settings
-screen.
-
-## 10.3.4
-
-* Fixes a bug where the permission status would return 'permanently denied'
-instead of 'denied' when the user would dismiss the permission dialog.
-
 ## 10.3.3
 
 * Migrates the Gradle compile arguments to the example app, so they are not enforced upon consumers of the plugin.

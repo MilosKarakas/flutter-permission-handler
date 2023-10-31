@@ -10,7 +10,7 @@
 @implementation EventPermissionStrategy
 
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
-    return permissionStatus(permission);
+    return [EventPermissionStrategy permissionStatus:permission];
 }
 
 - (void)checkServiceStatus:(PermissionGroup)permission completionHandler:(ServiceStatusHandler)completionHandler {
@@ -25,7 +25,7 @@
         return;
     }
     
-    EKEntityType entityType = getEntityType(permission);
+    EKEntityType entityType = [getEntityType:permission];
     
     if (permission == PermissionGroupCalendar) {
         #if !PERMISSION_EVENTS
@@ -96,7 +96,7 @@
 }
 
 + (PermissionStatus)permissionStatus:(PermissionGroup)permission {
-    EKEntityType entityType = getEntityType(permission);
+    EKEntityType entityType = [getEntityType:permission];
     EKAuthorizationStatus status = [EKEventStore authorizationStatusForEntityType:entityType];
 
     if (@available(iOS 17.0, *)) {

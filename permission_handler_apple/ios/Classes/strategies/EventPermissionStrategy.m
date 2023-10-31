@@ -134,7 +134,7 @@
     return PermissionStatusDenied;
 }
 
-+ (EntityType)getEntityType:(PermissionGroup)permission {
++ (EKEntityType)getEntityType:(PermissionGroup)permission {
     if (permission == PermissionGroupCalendar || permission == PermissionGroupCalendarFullAccess || permission == PermissionGroupCalendarWriteOnly) {
         return EKEntityTypeEvent;
     } else if (permission == PermissionGroupReminders) {

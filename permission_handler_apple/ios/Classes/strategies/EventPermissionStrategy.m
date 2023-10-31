@@ -10,17 +10,7 @@
 @implementation EventPermissionStrategy
 
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
-    if (permission == PermissionGroupCalendar || permission == PermissionGroupCalendarWriteOnly || permission == PermissionGroupCalendarFullAccess) {
-        #if PERMISSION_EVENTS | PERMISSION_EVENTS_FULL_ACCESS
-        return [EventPermissionStrategy permissionStatus:EKEntityTypeEvent];
-        #endif
-    } else if (permission == PermissionGroupReminders) {
-        #if PERMISSION_REMINDERS
-        return [EventPermissionStrategy permissionStatus:EKEntityTypeReminder];
-        #endif
-    }
-    
-    return PermissionStatusDenied;
+    return permissionStatus(permission);
 }
 
 - (void)checkServiceStatus:(PermissionGroup)permission completionHandler:(ServiceStatusHandler)completionHandler {
@@ -35,40 +25,34 @@
         return;
     }
     
-    EKEntityType entityType;
+    EKEntityType entityType = getEntityType(permission);
     
-    if (permission == PermissionGroupCalendar || permission == PermissionGroupCalendarWriteOnly) {
-        #if PERMISSION_EVENTS
-        entityType = EKEntityTypeEvent;
-        #else
+    if (permission == PermissionGroupCalendar) {
+        #if !PERMISSION_EVENTS
+        completionHandler(PermissionStatusDenied);
+        return;
+        #endif
+    } else if (permission == PermissionGroupCalendarWriteOnly) {
+        #if !PERMISSION_EVENTS && !PERMISSION_EVENTS_FULL_ACCESS
         completionHandler(PermissionStatusDenied);
         return;
         #endif
     } else if (permission == PermissionGroupCalendarFullAccess) {
-        #if PERMISSION_EVENTS_FULL_ACCESS
-        entityType = EKEntityTypeEvent;
-        #else
+        #if !PERMISSION_EVENTS_FULL_ACCESS
         completionHandler(PermissionStatusDenied);
         return;
         #endif
     } else if (permission == PermissionGroupReminders) {
-        #if PERMISSION_REMINDERS
-        entityType = EKEntityTypeReminder;
-        #else
+        #if !PERMISSION_REMINDERS
         completionHandler(PermissionStatusDenied);
         return;
         #endif
     }
-
-    else {
-        completionHandler(PermissionStatusPermanentlyDenied);
-        return;
-    }
-
+    
     EKEventStore *eventStore = [[EKEventStore alloc] init];
 
     if (@available(iOS 17.0, *)) {
-        if (entityType == EKEntityTypeEvent) {
+        if (permission == PermissionGroupCalendarFullAccess) {
             #if PERMISSION_EVENTS_FULL_ACCESS
             [eventStore requestFullAccessToEventsWithCompletion:^(BOOL granted, NSError *error) {
                     if (granted) {
@@ -77,7 +61,9 @@
                         completionHandler(PermissionStatusPermanentlyDenied);
                     }
                 }];
-            #elif PERMISSION_EVENTS
+            #endif
+        } else if (permission == PermissionGroupCalendarWriteOnly) {
+            #if PERMISSION_EVENTS || PERMISSION_EVENTS_FULL_ACCESS
             [eventStore requestWriteOnlyAccessToEventsWithCompletion:^(BOOL granted, NSError *error) {
                     if (granted) {
                         completionHandler(PermissionStatusGranted);
@@ -86,7 +72,7 @@
                     }
                 }];
             #endif
-        } else {
+        } else if (permission == PermissionGroupReminders) {
             #if PERMISSION_REMINDERS
             [eventStore requestFullAccessToRemindersWithCompletion:^(BOOL granted, NSError *error) {
                                 if (granted) {
@@ -109,7 +95,8 @@
 
 }
 
-+ (PermissionStatus)permissionStatus:(EKEntityType)entityType {
++ (PermissionStatus)permissionStatus:(PermissionGroup)permission {
+    EKEntityType entityType = getEntityType(permission);
     EKAuthorizationStatus status = [EKEventStore authorizationStatusForEntityType:entityType];
 
     if (@available(iOS 17.0, *)) {
@@ -123,11 +110,11 @@
                 case EKAuthorizationStatusFullAccess:
                     return PermissionStatusGranted;
                 case EKAuthorizationStatusWriteOnly:
-                    #if PERMISSION_EVENTS_FULL_ACCESS
+                    if (permission == PermissionGroupCalendarWriteOnly) {
+                        return PermissionStatusGranted;
+                    }
+
                     return PermissionStatusDenied;
-                    #elif PERMISSION_EVENTS
-                    return PermissionStatusGranted;
-                    #endif
             }
     } else {
         switch (status) {
@@ -145,6 +132,16 @@
 
     
     return PermissionStatusDenied;
+}
+
++ (EntityType)getEntityType:(PermissionGroup)permission {
+    if (permission == PermissionGroupCalendar || permission == PermissionGroupCalendarFullAccess || permission == PermissionGroupCalendarWriteOnly) {
+        return EKEntityTypeEvent;
+    } else if (permission == PermissionGroupReminders) {
+        return EKEntityTypeReminder;
+    }
+    
+    return nil;
 }
 
 @end

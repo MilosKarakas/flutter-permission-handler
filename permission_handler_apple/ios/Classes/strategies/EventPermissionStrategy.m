@@ -25,7 +25,7 @@
         return;
     }
     
-    EKEntityType entityType = [getEntityType:permission];
+    EKEntityType entityType = [EventPermissionStrategy getEntityType:permission];
     
     if (permission == PermissionGroupCalendar) {
         #if !PERMISSION_EVENTS
@@ -96,7 +96,7 @@
 }
 
 + (PermissionStatus)permissionStatus:(PermissionGroup)permission {
-    EKEntityType entityType = [getEntityType:permission];
+    EKEntityType entityType = [EventPermissionStrategy getEntityType:permission];
     EKAuthorizationStatus status = [EKEventStore authorizationStatusForEntityType:entityType];
 
     if (@available(iOS 17.0, *)) {

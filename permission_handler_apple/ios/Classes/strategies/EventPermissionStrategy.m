@@ -24,9 +24,7 @@
         completionHandler(permissionStatus);
         return;
     }
-    
-    EKEntityType entityType = [EventPermissionStrategy getEntityType:permission];
-    
+
     if (permission == PermissionGroupCalendar) {
         #if !PERMISSION_EVENTS
         completionHandler(PermissionStatusDenied);
@@ -84,6 +82,8 @@
             #endif
         }
     } else {
+        EKEntityType entityType = [EventPermissionStrategy getEntityType:permission];
+
         [eventStore requestAccessToEntityType:entityType completion:^(BOOL granted, NSError *error) {
                 if (granted) {
                     completionHandler(PermissionStatusGranted);
